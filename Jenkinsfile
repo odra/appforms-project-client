@@ -23,24 +23,18 @@ node(platform) {
         checkout scm
     }
 
-    stage("Install local Cordova") {
-        sh "npm install cordova@6.3.1"
-    }
-
     stage("Prepare") {
-        sh "node_modules/cordova/bin/cordova platform rm $platform"
-        sh "node_modules/cordova/bin/cordova platform add $platform"
-        sh "node_modules/cordova/bin/cordova prepare $platform"
+        sh "cordova platform rm $platform"
+        sh "cordova platform add $platform"
+        sh "cordova prepare $platform"
     }
 
     stage("Build") {
-        withEnv(['CORDOVA_ANDROID_GRADLE_DISTRIBUTION_URL=https://services.gradle.org/distributions/gradle-2.13-bin.zip']) {
             if (BUILD_CONFIG == 'debug') {
-               sh 'node_modules/cordova/bin/cordova build $platform --debug'
+               sh 'cordova build $platform --debug'
             } else {
-               sh 'node_modules/cordova/bin/cordova build $platform --release'
+               sh 'cordova build $platform --release'
             }
-        }
     }
 
     stage("Sign") {
